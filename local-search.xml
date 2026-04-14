@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>本地预览与发布演练-2026-04-14</title>
+    <link href="/2026/04/14/%E6%9C%AC%E5%9C%B0%E9%A2%84%E8%A7%88%E4%B8%8E%E5%8F%91%E5%B8%83%E6%BC%94%E7%BB%83-2026-04-14/"/>
+    <url>/2026/04/14/%E6%9C%AC%E5%9C%B0%E9%A2%84%E8%A7%88%E4%B8%8E%E5%8F%91%E5%B8%83%E6%BC%94%E7%BB%83-2026-04-14/</url>
+    
+    <content type="html"><![CDATA[<p>这是一篇用于演练「本地修改 -&gt; 本地预览 -&gt; 发布上线」流程的文章。</p><h2 id="我做了什么"><a href="#我做了什么" class="headerlink" title="我做了什么"></a>我做了什么</h2><ol><li>在本地新建文章文件。</li><li>启动本地服务预览页面效果。</li><li>执行构建并部署到 GitHub Pages。</li></ol><h2 id="小提示"><a href="#小提示" class="headerlink" title="小提示"></a>小提示</h2><p>每次正式发布前，建议先本地预览一遍，确认内容、图片和链接都正常。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>站点维护</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Hexo</tag>
+      
+      <tag>教程</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>关于如何注册使用Chat GPT</title>
     <link href="/2023/02/08/%E5%85%B3%E4%BA%8E%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C%E4%BD%BF%E7%94%A8Chat-GPT/"/>
     <url>/2023/02/08/%E5%85%B3%E4%BA%8E%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C%E4%BD%BF%E7%94%A8Chat-GPT/</url>
