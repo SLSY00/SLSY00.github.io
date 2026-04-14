@@ -23,7 +23,7 @@
     root.innerHTML = '<div id="global-aplayer"></div>';
     document.body.appendChild(root);
 
-    new APlayer({
+    var player = new APlayer({
       container: document.getElementById('global-aplayer'),
       fixed: !!cfg.fixed,
       mini: !!cfg.mini,
@@ -39,10 +39,29 @@
       listMaxHeight: cfg.listMaxHeight || '220px',
       audio: cfg.audio
     });
+
+    // Browsers may block autoplay. Fallback: play once on first user interaction.
+    function tryPlayOnce() {
+      if (!player || typeof player.play !== 'function') return;
+      try {
+        player.play();
+      } catch (e) {}
+      document.removeEventListener('click', tryPlayOnce, true);
+      document.removeEventListener('keydown', tryPlayOnce, true);
+      document.removeEventListener('touchstart', tryPlayOnce, true);
+    }
+
+    if (cfg.autoplay) {
+      document.addEventListener('click', tryPlayOnce, true);
+      document.addEventListener('keydown', tryPlayOnce, true);
+      document.addEventListener('touchstart', tryPlayOnce, true);
+    }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { boot(0); }, { once: true });
+    document.addEventListener('DOMContentLoaded', function () {
+      boot(0);
+    }, { once: true });
   } else {
     boot(0);
   }

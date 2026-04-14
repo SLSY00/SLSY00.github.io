@@ -2,7 +2,7 @@ window.GLOBAL_PLAYER_CONFIG = {
   enabled: true,
   fixed: false,
   mini: false,
-  autoplay: false,
+  autoplay: true,
   loop: 'all',
   order: 'list',
   preload: 'metadata',
