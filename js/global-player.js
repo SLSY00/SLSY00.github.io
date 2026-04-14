@@ -2,6 +2,7 @@
   if (window.__globalPlayerLoaded) return;
   window.__globalPlayerLoaded = true;
 
+  var initialized = false;
   var cfg = window.GLOBAL_PLAYER_CONFIG || {};
   if (!cfg.enabled) return;
 
@@ -34,6 +35,8 @@
   }
 
   function boot(tries) {
+    if (initialized) return;
+
     if (typeof window.APlayer !== 'function') {
       if ((tries || 0) < 12) {
         setTimeout(function () {
@@ -45,6 +48,7 @@
 
     if (!Array.isArray(cfg.audio) || cfg.audio.length === 0) return;
     if (document.getElementById('global-aplayer')) return;
+    initialized = true;
 
     var root = document.createElement('div');
     root.id = 'global-aplayer-wrap';
@@ -133,15 +137,28 @@
     }
   }
 
+  // Preferred init entry: unified navigation done hook (initial load).
+  window.addEventListener('site:navigate:done', function (e) {
+    if (initialized) return;
+    if (e && e.detail && e.detail.initial) {
+      boot(0);
+    }
+  });
+
+  // Fallback for cases where hook script is unavailable.
   if (document.readyState === 'loading') {
     document.addEventListener(
       'DOMContentLoaded',
       function () {
-        boot(0);
+        setTimeout(function () {
+          if (!initialized) boot(0);
+        }, 0);
       },
       { once: true }
     );
   } else {
-    boot(0);
+    setTimeout(function () {
+      if (!initialized) boot(0);
+    }, 0);
   }
 })();

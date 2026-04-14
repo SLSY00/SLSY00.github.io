@@ -4,6 +4,14 @@
 
   var navigating = false;
 
+  function emit(name, detail) {
+    if (window.SiteNavHooks && typeof window.SiteNavHooks.emit === "function") {
+      window.SiteNavHooks.emit(name, detail);
+      return;
+    }
+    window.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
+  }
+
   function isSameOrigin(url) {
     try {
       var u = new URL(url, window.location.href);
@@ -42,22 +50,10 @@
     });
   }
 
-  function refreshTheme() {
-    try {
-      if (window.Fluid && Fluid.boot) {
-        if (typeof Fluid.boot.registerEvents === "function") {
-          Fluid.boot.registerEvents();
-        }
-        if (typeof Fluid.boot.refresh === "function") {
-          Fluid.boot.refresh();
-        }
-      }
-    } catch (e) {}
-  }
-
   function navigate(url, push) {
     if (navigating) return;
     navigating = true;
+    emit("site:navigate:start", { url: url, push: push !== false });
     if (window.NProgress) window.NProgress.start();
 
     fetch(url, { credentials: "same-origin" })
@@ -84,14 +80,15 @@
 
         executeScriptsIn(nextHeader);
         executeScriptsIn(nextMain);
-        refreshTheme();
 
         if (push !== false) {
           window.history.pushState({ pjax: true }, "", url);
         }
         window.scrollTo(0, 0);
+        emit("site:navigate:done", { url: url, push: push !== false, pjax: true });
       })
       .catch(function () {
+        emit("site:navigate:error", { url: url });
         window.location.href = url;
       })
       .finally(function () {
@@ -110,4 +107,17 @@
   window.addEventListener("popstate", function () {
     navigate(window.location.href, false);
   });
+
+  // Fire once on first load so all modules can use the same hook entry.
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+        emit("site:navigate:done", { url: window.location.href, initial: true, pjax: false });
+      },
+      { once: true }
+    );
+  } else {
+    emit("site:navigate:done", { url: window.location.href, initial: true, pjax: false });
+  }
 })();
