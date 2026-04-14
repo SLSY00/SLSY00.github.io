@@ -5,9 +5,18 @@
   var cfg = window.GLOBAL_PLAYER_CONFIG || {};
   if (!cfg.enabled) return;
 
-  function boot() {
-    if (typeof window.APlayer !== 'function') return;
+  function boot(tries) {
+    if (typeof window.APlayer !== 'function') {
+      if ((tries || 0) < 12) {
+        setTimeout(function () {
+          boot((tries || 0) + 1);
+        }, 250);
+      }
+      return;
+    }
+
     if (!Array.isArray(cfg.audio) || cfg.audio.length === 0) return;
+    if (document.getElementById('global-aplayer')) return;
 
     var root = document.createElement('div');
     root.id = 'global-aplayer-wrap';
@@ -16,7 +25,7 @@
 
     new APlayer({
       container: document.getElementById('global-aplayer'),
-      fixed: cfg.fixed !== false,
+      fixed: !!cfg.fixed,
       mini: !!cfg.mini,
       autoplay: !!cfg.autoplay,
       theme: cfg.theme || '#4f9cff',
@@ -33,8 +42,8 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot, { once: true });
+    document.addEventListener('DOMContentLoaded', function () { boot(0); }, { once: true });
   } else {
-    boot();
+    boot(0);
   }
 })();
