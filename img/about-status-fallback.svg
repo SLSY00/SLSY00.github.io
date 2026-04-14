@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="220" viewBox="0 0 720 220" role="img" aria-labelledby="title desc">
+  <title id="title">GitHub Status Fallback</title>
+  <desc id="desc">Fallback image when external GitHub stats card is unreachable.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="220" rx="16" fill="url(#bg)"/>
+  <g fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif">
+    <text x="28" y="56" font-size="28" font-weight="700">GitHub stats card is unavailable now</text>
+    <text x="28" y="98" font-size="20">A local fallback image is active.</text>
+    <text x="28" y="136" font-size="18">Please retry later or visit:</text>
+    <text x="28" y="168" font-size="20" fill="#93c5fd">github.com/SLSY00</text>
+  </g>
+</svg>
