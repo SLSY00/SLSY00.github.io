@@ -1,4 +1,4 @@
-/* Fun effects: cursor trail, click hearts, and lightweight background particles */
+<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script>/* Fun effects: cursor trail, click symbols/confetti, and lightweight background particles */
 (function () {
   if (window.__funEffectsLoaded) return;
   window.__funEffectsLoaded = true;
@@ -57,7 +57,7 @@
     function (e) {
       var heart = document.createElement("div");
       heart.className = "fx-heart";
-      heart.textContent = Math.random() > 0.5 ? "❤" : "✦";
+      heart.textContent = Math.random() > 0.5 ? "*" : "+";
       heart.style.left = e.clientX + "px";
       heart.style.top = e.clientY + "px";
       heart.style.color = "hsl(" + Math.floor(Math.random() * 360) + " 85% 62%)";
@@ -65,6 +65,19 @@
       setTimeout(function () {
         heart.remove();
       }, 900);
+
+      if (typeof window.confetti === "function") {
+        window.confetti({
+          particleCount: 22,
+          spread: 58,
+          startVelocity: 22,
+          scalar: 0.8,
+          origin: {
+            x: e.clientX / window.innerWidth,
+            y: e.clientY / window.innerHeight
+          }
+        });
+      }
     },
     { passive: true }
   );

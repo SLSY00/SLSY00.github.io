@@ -24,7 +24,7 @@
 <meta property="og:description" content="这篇文章是一份可直接照做的操作手册，包含：  当前 Hexo 项目目录分别代表什么。 如何本地修改与调试预览。 如何把更新推送到 GitHub Pages。 如何在不同电脑之间拉取并继续更新。  一、当前项目目录代表什么在本项目 C:\Users\11402\Desktop\hexo 下，常见目录作用如下： 12345678910hexo&#x2F;├─ source&#x2F;            # 站点源文件">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-04-14T03:25:00.000Z">
-<meta property="article:modified_time" content="2026-04-14T03:18:37.859Z">
+<meta property="article:modified_time" content="2026-04-14T06:28:57.957Z">
 <meta property="article:author" content="石榴赏月">
 <meta property="article:tag" content="Hexo">
 <meta property="article:tag" content="GitHub Pages">
@@ -101,7 +101,9 @@
 
 
   
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><link rel="stylesheet" href="\assets\css\APlayer.min.css" class="aplayer-style-marker">
+<script src="\assets\js\APlayer.min.js" class="aplayer-script-marker"></script>
+</head>
 
 
 <body>
@@ -250,7 +252,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3k 字
+          3.6k 字
         
       </span>
     
@@ -261,7 +263,7 @@
         
         
         
-          26 分钟
+          30 分钟
         
       </span>
     
@@ -309,7 +311,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：3 小时前
+                    本文最后更新于：几秒前
                   
                 
               </p>
@@ -376,6 +378,31 @@
 <p>用途：先同步最新源码，再继续编辑与发布，避免覆盖彼此修改。</p>
 <hr>
 <p>如果你当前还没有“Hexo 源码仓库”，建议尽快新建一个（私有或公开都行），这样多电脑协作会稳定很多。</p>
+<h2 id="六、音乐播放器示例（APlayer）"><a href="#六、音乐播放器示例（APlayer）" class="headerlink" title="六、音乐播放器示例（APlayer）"></a>六、音乐播放器示例（APlayer）</h2><p>安装插件后，可以在任意文章里直接写 APlayer 标签：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs markdown">&#123;% aplayer &quot;试听示例&quot; &quot;SoundHelix&quot; &quot;https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3&quot; &quot;https://picsum.photos/300/300&quot; %&#125;<br></code></pre></td></tr></table></figure>
+
+<p>上面这个示例已经放到本文中，页面渲染后会直接出现播放器：</p>
+
+        <div id="aplayer-jGjeDdjx" class="aplayer aplayer-tag-marker" style="margin-bottom: 20px;">
+            <pre class="aplayer-lrc-content"></pre>
+        </div>
+        <script>
+          var ap = new APlayer({
+            element: document.getElementById("aplayer-jGjeDdjx"),
+            narrow: false,
+            autoplay: false,
+            showlrc: false,
+            music: {
+              title: "试听示例",
+              author: "SoundHelix",
+              url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+              pic: "https://picsum.photos/300/300",
+              lrc: ""
+            }
+          });
+          window.aplayers || (window.aplayers = []);
+          window.aplayers.push(ap);
+        </script>
 
                 
               </div>
@@ -787,6 +814,7 @@
 
 
   
+<script src="/js/confetti.browser.js"></script>
 <script src="/js/fun-effects.js"></script>
 
 
