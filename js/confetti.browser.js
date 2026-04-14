@@ -1,4 +1,4 @@
-<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script>// canvas-confetti v1.9.4 built on 2025-10-25T05:14:56.640Z
+// canvas-confetti v1.9.4 built on 2025-10-25T05:14:56.640Z
 !(function (window, module) {
 // source content
 /* globals Map */
