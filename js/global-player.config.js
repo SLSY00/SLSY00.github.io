@@ -15,16 +15,10 @@ window.GLOBAL_PLAYER_CONFIG = {
   // name: 标题, artist: 歌手, url: 音频地址, cover: 封面图地址
   audio: [
     {
-      name: 'SoundHelix Song 1',
-      artist: 'SoundHelix',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      cover: 'https://picsum.photos/300/300?random=11'
-    },
-    {
-      name: 'SoundHelix Song 2',
-      artist: 'SoundHelix',
-      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-      cover: 'https://picsum.photos/300/300?random=12'
+      name: 'Sky City',
+      artist: 'Li Zhi',
+      url: '/music/Li%20Zhi%20(%E6%9D%8E%E5%BF%97)%20-%20Sky%20City%20(%E5%A4%A9%E7%A9%BA%E4%B9%8B%E5%9F%8E).mp3',
+      cover: '/img/default.png'
     }
   ]
 };
