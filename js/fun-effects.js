@@ -21,6 +21,58 @@
       "@keyframes fx-heart-up{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-150%) scale(1.35)}}"
   );
 
+  var confettiCanvas = document.createElement("canvas");
+  confettiCanvas.setAttribute("aria-hidden", "true");
+  confettiCanvas.style.position = "fixed";
+  confettiCanvas.style.inset = "0";
+  confettiCanvas.style.pointerEvents = "none";
+  confettiCanvas.style.zIndex = "9998";
+  document.body.appendChild(confettiCanvas);
+  var cctx = confettiCanvas.getContext("2d");
+  var confettiPool = [];
+
+  function resizeConfettiCanvas() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+
+  function burstConfetti(x, y) {
+    for (var i = 0; i < 22; i++) {
+      var angle = (Math.PI * 2 * i) / 22 + (Math.random() - 0.5) * 0.35;
+      var speed = 2.2 + Math.random() * 3.5;
+      confettiPool.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 1.2,
+        life: 48 + Math.floor(Math.random() * 28),
+        size: 3 + Math.random() * 4,
+        color: "hsl(" + Math.floor(Math.random() * 360) + " 90% 60%)"
+      });
+    }
+  }
+
+  function drawConfetti() {
+    if (confettiPool.length === 0) return;
+    cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    for (var i = confettiPool.length - 1; i >= 0; i--) {
+      var p = confettiPool[i];
+      p.vy += 0.08;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 1;
+
+      cctx.fillStyle = p.color;
+      cctx.globalAlpha = Math.max(0, p.life / 70);
+      cctx.fillRect(p.x, p.y, p.size, p.size * 0.7);
+
+      if (p.life <= 0 || p.y > confettiCanvas.height + 20) {
+        confettiPool.splice(i, 1);
+      }
+    }
+    cctx.globalAlpha = 1;
+  }
+
   if (!isTouch) {
     var dot = document.createElement("div");
     var ring = document.createElement("div");
@@ -44,11 +96,11 @@
       { passive: true }
     );
 
-    (function animate() {
+    (function animateCursor() {
       ringX += (mouseX - ringX) * 0.16;
       ringY += (mouseY - ringY) * 0.16;
       ring.style.transform = "translate(" + ringX + "px," + ringY + "px)";
-      requestAnimationFrame(animate);
+      requestAnimationFrame(animateCursor);
     })();
   }
 
@@ -66,46 +118,35 @@
         heart.remove();
       }, 900);
 
-      if (typeof window.confetti === "function") {
-        window.confetti({
-          particleCount: 22,
-          spread: 58,
-          startVelocity: 22,
-          scalar: 0.8,
-          origin: {
-            x: e.clientX / window.innerWidth,
-            y: e.clientY / window.innerHeight
-          }
-        });
-      }
+      burstConfetti(e.clientX, e.clientY);
     },
     { passive: true }
   );
 
-  var canvas = document.createElement("canvas");
-  canvas.setAttribute("aria-hidden", "true");
-  canvas.style.position = "fixed";
-  canvas.style.inset = "0";
-  canvas.style.zIndex = "0";
-  canvas.style.pointerEvents = "none";
-  canvas.style.opacity = isTouch ? "0.2" : "0.35";
-  document.body.appendChild(canvas);
+  var bgCanvas = document.createElement("canvas");
+  bgCanvas.setAttribute("aria-hidden", "true");
+  bgCanvas.style.position = "fixed";
+  bgCanvas.style.inset = "0";
+  bgCanvas.style.zIndex = "0";
+  bgCanvas.style.pointerEvents = "none";
+  bgCanvas.style.opacity = isTouch ? "0.2" : "0.35";
+  document.body.appendChild(bgCanvas);
 
-  var ctx = canvas.getContext("2d");
+  var bctx = bgCanvas.getContext("2d");
   var points = [];
   var maxPoints = isTouch ? 24 : 42;
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  function resizeBg() {
+    bgCanvas.width = window.innerWidth;
+    bgCanvas.height = window.innerHeight;
   }
 
   function initPoints() {
     points = [];
     for (var i = 0; i < maxPoints; i++) {
       points.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * bgCanvas.width,
+        y: Math.random() * bgCanvas.height,
         vx: (Math.random() - 0.5) * 0.55,
         vy: (Math.random() - 0.5) * 0.55
       });
@@ -113,19 +154,19 @@
   }
 
   function tick() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    bctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
     for (var i = 0; i < points.length; i++) {
       var p = points[i];
       p.x += p.vx;
       p.y += p.vy;
 
-      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+      if (p.x < 0 || p.x > bgCanvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > bgCanvas.height) p.vy *= -1;
 
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(70, 170, 255, 0.75)";
-      ctx.fill();
+      bctx.beginPath();
+      bctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+      bctx.fillStyle = "rgba(70, 170, 255, 0.75)";
+      bctx.fill();
     }
 
     for (var a = 0; a < points.length; a++) {
@@ -137,22 +178,25 @@
         var dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 105) {
           var alpha = (1 - dist / 105) * 0.26;
-          ctx.beginPath();
-          ctx.moveTo(pa.x, pa.y);
-          ctx.lineTo(pb.x, pb.y);
-          ctx.strokeStyle = "rgba(80, 180, 255, " + alpha.toFixed(3) + ")";
-          ctx.stroke();
+          bctx.beginPath();
+          bctx.moveTo(pa.x, pa.y);
+          bctx.lineTo(pb.x, pb.y);
+          bctx.strokeStyle = "rgba(80, 180, 255, " + alpha.toFixed(3) + ")";
+          bctx.stroke();
         }
       }
     }
 
+    drawConfetti();
     requestAnimationFrame(tick);
   }
 
-  resize();
+  resizeBg();
+  resizeConfettiCanvas();
   initPoints();
   window.addEventListener("resize", function () {
-    resize();
+    resizeBg();
+    resizeConfettiCanvas();
     initPoints();
   });
   requestAnimationFrame(tick);
