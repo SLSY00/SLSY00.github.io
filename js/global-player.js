@@ -5,6 +5,34 @@
   var cfg = window.GLOBAL_PLAYER_CONFIG || {};
   if (!cfg.enabled) return;
 
+  var STORAGE_KEY = 'global_aplayer_state_v1';
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      var state = JSON.parse(raw);
+      if (!state || typeof state !== 'object') return null;
+      return state;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveState(player) {
+    if (!player || !player.audio) return;
+    try {
+      var idx = player.list && typeof player.list.index === 'number' ? player.list.index : 0;
+      var state = {
+        index: idx,
+        time: Number(player.audio.currentTime || 0),
+        paused: !!player.paused,
+        updatedAt: Date.now()
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {}
+  }
+
   function boot(tries) {
     if (typeof window.APlayer !== 'function') {
       if ((tries || 0) < 12) {
@@ -23,6 +51,8 @@
     root.innerHTML = '<div id="global-aplayer"></div>';
     document.body.appendChild(root);
 
+    var saved = loadState();
+
     var player = new APlayer({
       container: document.getElementById('global-aplayer'),
       fixed: !!cfg.fixed,
@@ -40,6 +70,50 @@
       audio: cfg.audio
     });
 
+    // Restore previous track and progress on each new page load.
+    if (saved) {
+      var restoreIndex = Number(saved.index || 0);
+      var restoreTime = Number(saved.time || 0);
+
+      if (restoreIndex >= 0 && restoreIndex < cfg.audio.length && player.list && typeof player.list.switch === 'function') {
+        try {
+          player.list.switch(restoreIndex);
+        } catch (e) {}
+      }
+
+      if (restoreTime > 0) {
+        setTimeout(function () {
+          try {
+            if (typeof player.seek === 'function') {
+              player.seek(restoreTime);
+            } else if (player.audio) {
+              player.audio.currentTime = restoreTime;
+            }
+          } catch (e) {}
+        }, 250);
+      }
+    }
+
+    var lastSaveAt = 0;
+    function saveStateThrottled() {
+      var now = Date.now();
+      if (now - lastSaveAt < 1000) return;
+      lastSaveAt = now;
+      saveState(player);
+    }
+
+    if (typeof player.on === 'function') {
+      player.on('timeupdate', saveStateThrottled);
+      player.on('play', saveStateThrottled);
+      player.on('pause', saveStateThrottled);
+      player.on('listswitch', saveStateThrottled);
+      player.on('ended', saveStateThrottled);
+    }
+
+    window.addEventListener('beforeunload', function () {
+      saveState(player);
+    });
+
     // Browsers may block autoplay. Fallback: play once on first user interaction.
     function tryPlayOnce() {
       if (!player || typeof player.play !== 'function') return;
@@ -51,7 +125,8 @@
       document.removeEventListener('touchstart', tryPlayOnce, true);
     }
 
-    if (cfg.autoplay) {
+    var shouldAutoResume = !!cfg.autoplay || (saved && saved.paused === false);
+    if (shouldAutoResume) {
       document.addEventListener('click', tryPlayOnce, true);
       document.addEventListener('keydown', tryPlayOnce, true);
       document.addEventListener('touchstart', tryPlayOnce, true);
@@ -59,9 +134,13 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      boot(0);
-    }, { once: true });
+    document.addEventListener(
+      'DOMContentLoaded',
+      function () {
+        boot(0);
+      },
+      { once: true }
+    );
   } else {
     boot(0);
   }
